@@ -1,0 +1,1003 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fff8ed">
+  <title>Dussehra Story Generator</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #30251f;
+      --muted: #76685f;
+      --saffron: #bc4c22;
+      --saffron-dark: #963817;
+      --paper: #fffdf9;
+      --line: #eadfd2;
+      --plum: #464feb;
+      --gold: #bd8b3c;
+      --green: #425c43;
+      font-family: "Segoe UI", "Noto Sans", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse at 8% 0%, rgba(255, 215, 158, .72) 0, transparent 31rem),
+        radial-gradient(ellipse at 100% 55%, rgba(224, 194, 145, .23) 0, transparent 34rem),
+        linear-gradient(145deg, #fff9ef 0%, #fff7eb 48%, #f8eee0 100%);
+    }
+
+    button, select, input { font: inherit; }
+
+    input[list] {
+      width: 100%;
+      min-height: 44px;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      color: var(--ink);
+      background: linear-gradient(180deg, #fff 0%, #fffcf8 100%);
+    }
+
+    input[list]:focus { border-color: var(--saffron); outline: 0; box-shadow: 0 0 0 3px rgba(188, 76, 34, .1); }
+
+    .page {
+      width: min(1160px, calc(100% - 48px));
+      margin: 0 auto;
+      padding: 26px 0 48px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 58px;
+      padding: 12px 16px;
+      border: 1px solid rgba(220, 197, 162, .54);
+      border-radius: 16px;
+      background: rgba(255, 253, 249, .65);
+      box-shadow: 0 8px 24px rgba(98, 61, 34, .035);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: .02em;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      border-radius: 50%;
+      border: 1px solid rgba(189, 139, 60, .3);
+      background: linear-gradient(145deg, #fff1d8, #f9dfb8);
+      font-size: 20px;
+      box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .45);
+    }
+
+    .festival-tag {
+      padding: 8px 13px;
+      border: 1px solid #e8d2b0;
+      border-radius: 999px;
+      color: var(--saffron-dark);
+      background: linear-gradient(135deg, #fff8eb, #fffdf8);
+      font-size: 12px;
+      font-weight: 700;
+      box-shadow: 0 2px 8px rgba(98, 61, 34, .04);
+    }
+
+    .intro {
+      position: relative;
+      max-width: 760px;
+      margin: 0 auto 38px;
+      text-align: center;
+    }
+
+    .intro::before, .intro::after {
+      position: absolute;
+      top: 43%;
+      color: rgba(189, 139, 60, .46);
+      content: "✦";
+      font-size: 22px;
+    }
+
+    .intro::before { left: 2%; }
+    .intro::after { right: 2%; }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--saffron);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(42px, 6vw, 68px);
+      font-weight: 500;
+      letter-spacing: -.045em;
+      line-height: 1.05;
+    }
+
+    .intro-copy {
+      max-width: 560px;
+      margin: 16px auto 0;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(300px, .72fr) minmax(0, 1.28fr);
+      gap: 22px;
+      align-items: start;
+    }
+
+    .panel {
+      border: 1px solid rgba(226, 210, 188, .95);
+      border-radius: 22px;
+      background: rgba(255, 253, 249, .96);
+      box-shadow: 0 18px 55px rgba(98, 61, 34, .085), 0 2px 8px rgba(98, 61, 34, .035);
+    }
+
+    .controls { position: sticky; top: 20px; padding: 27px; }
+
+    .panel-heading {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 25px;
+      font-weight: 500;
+    }
+
+    .panel-hint {
+      margin: 7px 0 23px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .field { margin: 0 0 19px; }
+
+    label {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    select {
+      width: 100%;
+      min-height: 44px;
+      padding: 0 36px 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      color: var(--ink);
+      background: linear-gradient(180deg, #fff 0%, #fffcf8 100%);
+      cursor: pointer;
+      transition: border-color .18s ease, box-shadow .18s ease;
+    }
+
+    select:hover { border-color: #d2b38a; }
+    select:focus { border-color: var(--saffron); box-shadow: 0 0 0 3px rgba(188, 76, 34, .1); }
+
+    .character-picker {
+      max-height: 226px;
+      overflow-y: auto;
+      padding: 7px 11px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: linear-gradient(180deg, #fff 0%, #fffcf8 100%);
+      scrollbar-color: #d6c5ae #f8f2e9;
+      scrollbar-width: thin;
+    }
+
+    .character-picker label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0;
+      padding: 7px 6px;
+      border-radius: 7px;
+      font-size: 13px;
+      font-weight: 400;
+      cursor: pointer;
+      transition: background .15s ease;
+    }
+
+    .character-picker label:hover { background: #fff4e4; }
+    .character-picker input { width: 15px; height: 15px; accent-color: var(--saffron); }
+
+    .character-help {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .selection-count {
+      float: right;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .language-note {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .select-all {
+      margin: 0 0 7px;
+      padding: 0;
+      border: 0;
+      color: var(--green);
+      background: transparent;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .select-all:hover { text-decoration: underline; }
+
+    select:focus-visible, button:focus-visible, a:focus-visible {
+      outline: 3px solid rgba(188, 76, 34, .28);
+      outline-offset: 2px;
+    }
+
+    .generate {
+      display: flex;
+      width: 100%;
+      min-height: 50px;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      margin-top: 7px;
+      border: 0;
+      border-radius: 12px;
+      color: white;
+      background: linear-gradient(135deg, #c95628, #a9401c);
+      cursor: pointer;
+      font-weight: 700;
+      box-shadow: 0 7px 15px rgba(158, 58, 26, .2);
+      transition: background .18s ease, transform .18s ease, box-shadow .18s ease;
+    }
+
+    .generate:hover {
+      background: linear-gradient(135deg, #b74a22, #8d3519);
+      box-shadow: 0 9px 20px rgba(158, 58, 26, .25);
+    }
+    .generate:active { transform: translateY(1px); }
+    .generate:disabled { cursor: wait; opacity: .7; }
+
+    .privacy-note {
+      margin: 15px 0 0;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    .story-panel {
+      display: flex;
+      min-height: 550px;
+      flex-direction: column;
+      padding: 27px 30px;
+      overflow: hidden;
+    }
+
+    .story-panel::before {
+      height: 4px;
+      margin: -27px -30px 23px;
+      background: linear-gradient(90deg, #d29a40, #bd4c22 48%, #52704b);
+      content: "";
+    }
+
+    .story-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding-bottom: 19px;
+      border-bottom: 1px solid #eee4d8;
+    }
+
+    .story-label {
+      margin: 0 0 4px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    .story-header h2 {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 25px;
+      font-weight: 500;
+    }
+
+    .copy-button {
+      padding: 9px 13px;
+      border: 1px solid #e7d7c1;
+      border-radius: 10px;
+      color: var(--green);
+      background: #fffaf2;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+      transition: background .18s ease, border-color .18s ease;
+    }
+
+    .copy-button:hover:not(:disabled) { border-color: #cdb38e; background: #fff2de; }
+    .copy-button:disabled { cursor: not-allowed; opacity: .45; }
+
+    .story-content {
+      flex: 1;
+      padding: 22px 4px;
+      color: #51443a;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 17px;
+      line-height: 1.8;
+    }
+
+    .story-content .story-title {
+      margin: 0 0 18px;
+      color: var(--saffron-dark);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 1.3;
+    }
+
+    .story-content p { margin: 0 0 19px; animation: appear .35s ease both; }
+    .story-content p:last-child { margin-bottom: 0; }
+    .story-content .lesson {
+      margin-top: 25px;
+      padding: 15px 17px;
+      border-left: 3px solid var(--gold);
+      border-radius: 0 10px 10px 0;
+      color: #66502c;
+      background: #fbf2e2;
+      font-family: "Segoe UI", "Noto Sans", sans-serif;
+      font-size: 14px;
+      line-height: 1.65;
+    }
+    @keyframes appear {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .placeholder {
+      display: grid;
+      min-height: 275px;
+      place-items: center;
+      color: #95867a;
+      text-align: center;
+    }
+
+    .placeholder-inner { max-width: 280px; }
+
+    .placeholder-icon {
+      display: grid;
+      width: 58px;
+      height: 58px;
+      place-items: center;
+      margin: 0 auto 14px;
+      border-radius: 50%;
+      background: #fff1df;
+      font-size: 26px;
+    }
+
+    .placeholder p { margin: 0; font-size: 14px; line-height: 1.6; }
+
+    .error-message {
+      margin: auto 0;
+      padding: 14px 15px;
+      border: 1px solid #f2c7b8;
+      border-radius: 10px;
+      color: #8d301c;
+      background: #fff3ee;
+      font-family: "Segoe UI", sans-serif;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .footer {
+      margin-top: 24px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    a { color: var(--green); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    @media (max-width: 720px) {
+      .page { width: min(100% - 28px, 520px); padding-top: 22px; }
+      .topbar { margin-bottom: 42px; }
+      .workspace { grid-template-columns: 1fr; }
+      .controls { position: static; }
+      .story-panel { min-height: 390px; }
+      .intro::before, .intro::after { display: none; }
+    }
+
+    @media (max-width: 420px) {
+      .festival-tag { font-size: 10px; }
+      .topbar { padding: 9px 11px; }
+      .controls, .story-panel { padding: 20px; }
+      .story-content { font-size: 15px; }
+      .story-panel::before { margin: -20px -20px 19px; }
+      .story-header h2 { font-size: 21px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">🪔</span> FESTIVAL TALES</div>
+      <span class="festival-tag">A Dussehra story maker</span>
+    </header>
+
+    <section class="intro" aria-labelledby="page-title">
+      <p class="eyebrow">A little light, a lasting lesson</p>
+      <h1 id="page-title">Stories of courage<br>and kindness</h1>
+      <p class="intro-copy">Bring the spirit of Dussehra to life with an original story inspired by Rama, Sita, and Hanuman.</p>
+    </section>
+
+    <section class="workspace" aria-label="Story generator">
+      <form class="panel controls" id="story-form">
+        <h2 class="panel-heading">Create your story</h2>
+        <p class="panel-hint">Choose a few story ingredients. Your tale will be ready in a moment.</p>
+
+        <div class="field">
+          <label id="characters-label">Featuring (choose any) <span class="selection-count" id="selection-count">3 selected</span></label>
+          <button class="select-all" id="select-all" type="button">Select all characters</button>
+          <div class="character-picker" role="group" aria-labelledby="characters-label">
+            <label><input type="checkbox" name="characters" value="Rama" checked> Rama</label>
+            <label><input type="checkbox" name="characters" value="Sita" checked> Sita</label>
+            <label><input type="checkbox" name="characters" value="Hanuman" checked> Hanuman</label>
+            <label><input type="checkbox" name="characters" value="Lakshmana"> Lakshmana</label>
+            <label><input type="checkbox" name="characters" value="Bharata"> Bharata</label>
+            <label><input type="checkbox" name="characters" value="Shatrughna"> Shatrughna</label>
+            <label><input type="checkbox" name="characters" value="Dasharatha"> Dasharatha</label>
+            <label><input type="checkbox" name="characters" value="Kaushalya"> Kaushalya</label>
+            <label><input type="checkbox" name="characters" value="Kaikeyi"> Kaikeyi</label>
+            <label><input type="checkbox" name="characters" value="Sumitra"> Sumitra</label>
+            <label><input type="checkbox" name="characters" value="Ravana"> Ravana</label>
+            <label><input type="checkbox" name="characters" value="Vibhishana"> Vibhishana</label>
+            <label><input type="checkbox" name="characters" value="Kumbhakarna"> Kumbhakarna</label>
+            <label><input type="checkbox" name="characters" value="Indrajit (Meghanada)"> Indrajit (Meghanada)</label>
+            <label><input type="checkbox" name="characters" value="Jatayu"> Jatayu</label>
+            <label><input type="checkbox" name="characters" value="Sugriva"> Sugriva</label>
+            <label><input type="checkbox" name="characters" value="Vali"> Vali</label>
+            <label><input type="checkbox" name="characters" value="Angada"> Angada</label>
+            <label><input type="checkbox" name="characters" value="Jambavan"> Jambavan</label>
+            <label><input type="checkbox" name="characters" value="Nala"> Nala</label>
+            <label><input type="checkbox" name="characters" value="Nila"> Nila</label>
+            <label><input type="checkbox" name="characters" value="Shabari"> Shabari</label>
+            <label><input type="checkbox" name="characters" value="Ahalya"> Ahalya</label>
+            <label><input type="checkbox" name="characters" value="Janaka"> Janaka</label>
+            <label><input type="checkbox" name="characters" value="Mandodari"> Mandodari</label>
+            <label><input type="checkbox" name="characters" value="Surpanakha"> Surpanakha</label>
+            <label><input type="checkbox" name="characters" value="Maricha"> Maricha</label>
+            <label><input type="checkbox" name="characters" value="Tara"> Tara</label>
+            <label><input type="checkbox" name="characters" value="Urmila"> Urmila</label>
+          </div>
+          <p class="character-help">A selection of named Ramayana characters; versions and traditions include many more.</p>
+        </div>
+
+        <div class="field">
+          <label for="setting">Story setting</label>
+          <select id="setting" name="setting">
+            <option>The forest</option>
+            <option>Lanka</option>
+            <option>Ayodhya</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="lesson">A lesson about</label>
+          <select id="lesson" name="lesson">
+            <option>Courage and doing what is right</option>
+            <option>Devotion and friendship</option>
+            <option>Wisdom and patience</option>
+            <option>Hope and perseverance</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="length">Story length</label>
+          <select id="length" name="length">
+            <option>Short</option>
+            <option>Medium</option>
+            <option>Long</option>
+            <option>Very long</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="language">Story language</label>
+          <input id="language" name="language" list="world-languages" value="English"
+                 maxlength="80" autocomplete="off" required>
+          <datalist id="world-languages">
+            <option value="English"><option value="Hindi"><option value="Bengali">
+            <option value="Telugu"><option value="Marathi"><option value="Tamil">
+            <option value="Urdu"><option value="Gujarati"><option value="Kannada">
+            <option value="Odia"><option value="Malayalam"><option value="Punjabi">
+            <option value="Assamese"><option value="Nepali"><option value="Sanskrit">
+            <option value="Arabic"><option value="Chinese (Simplified)">
+            <option value="Chinese (Traditional)"><option value="Japanese">
+            <option value="Korean"><option value="Indonesian"><option value="Malay">
+            <option value="Thai"><option value="Vietnamese"><option value="Filipino">
+            <option value="Burmese"><option value="Khmer"><option value="Lao">
+            <option value="French"><option value="Spanish"><option value="Portuguese">
+            <option value="German"><option value="Italian"><option value="Dutch">
+            <option value="Russian"><option value="Ukrainian"><option value="Polish">
+            <option value="Greek"><option value="Turkish"><option value="Persian">
+            <option value="Hebrew"><option value="Swahili"><option value="Amharic">
+            <option value="Yoruba"><option value="Igbo"><option value="Hausa">
+            <option value="Zulu"><option value="Afrikaans"><option value="Somali">
+            <option value="Irish"><option value="Welsh"><option value="Swedish">
+            <option value="Norwegian"><option value="Danish"><option value="Finnish">
+            <option value="Czech"><option value="Romanian"><option value="Hungarian">
+            <option value="Serbian"><option value="Croatian"><option value="Bulgarian">
+            <option value="Pashto"><option value="Kurdish"><option value="Mongolian">
+            <option value="Tibetan"><option value="Sinhala"><option value="Maori">
+            <option value="Hawaiian">
+          </datalist>
+          <p class="language-note">Choose or type a language. English stories work offline; other languages use Google Translate online. The story text is sent for translation.</p>
+        </div>
+
+        <button class="generate" id="generate-button" type="submit">
+          <span aria-hidden="true">✦</span><span>Generate my story</span>
+        </button>
+        <p class="privacy-note">Opened as a file? Stories are generated on this device—no server or API key needed.</p>
+      </form>
+
+      <section class="panel story-panel" aria-labelledby="story-heading">
+        <div class="story-header">
+          <div>
+            <p class="story-label">Your original tale</p>
+            <h2 id="story-heading">A story awaits</h2>
+          </div>
+          <button class="copy-button" id="copy-button" type="button" disabled>Copy story</button>
+        </div>
+        <div class="story-content" id="story-content" aria-live="polite" aria-busy="false">
+          <div class="placeholder">
+            <div class="placeholder-inner">
+              <div class="placeholder-icon" aria-hidden="true">📜</div>
+              <p>Choose your ingredients, then let a new story unfold.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <footer class="footer">
+      Original stories inspired by the Ramayana. Generated text is a creative retelling, not scripture.
+    </footer>
+  </main>
+
+  <script>
+    const form = document.querySelector("#story-form");
+    const generateButton = document.querySelector("#generate-button");
+    const storyContent = document.querySelector("#story-content");
+    const storyHeading = document.querySelector("#story-heading");
+    const copyButton = document.querySelector("#copy-button");
+    const characterInputs = [...document.querySelectorAll('input[name="characters"]')];
+    const selectAllButton = document.querySelector("#select-all");
+    const selectionCount = document.querySelector("#selection-count");
+    const languageInput = document.querySelector("#language");
+    const useBrowserGenerator = window.location.protocol === "file:"
+      || !["localhost", "127.0.0.1"].includes(window.location.hostname);
+    let currentStory = "";
+
+    function renderStory(text) {
+      storyContent.replaceChildren();
+      const paragraphs = text.split(/\n\s*\n/).filter((paragraph) => paragraph.trim());
+      paragraphs.forEach((paragraph, index) => {
+        const element = document.createElement("p");
+        const content = paragraph.trim();
+        if (/^Lesson:/i.test(content)) {
+          element.className = "lesson";
+          const label = document.createElement("strong");
+          label.textContent = "Lesson: ";
+          element.append(label, document.createTextNode(content.replace(/^Lesson:\s*/i, "")));
+        } else if (index === paragraphs.length - 1) {
+          element.className = "lesson";
+          element.textContent = content;
+        } else {
+          if (index === 0) element.className = "story-title";
+          element.textContent = content;
+        }
+        storyContent.append(element);
+      });
+    }
+
+    const translationLanguageCodes = {
+      english: "en", hindi: "hi", bengali: "bn", telugu: "te", marathi: "mr",
+      tamil: "ta", urdu: "ur", gujarati: "gu", kannada: "kn", odia: "or",
+      oriya: "or", malayalam: "ml", punjabi: "pa", assamese: "as", nepali: "ne",
+      sanskrit: "sa", arabic: "ar", "chinese (simplified)": "zh-CN",
+      "chinese (traditional)": "zh-TW", chinese: "zh-CN", mandarin: "zh-CN",
+      japanese: "ja", korean: "ko", indonesian: "id", malay: "ms", thai: "th",
+      vietnamese: "vi", filipino: "tl", tagalog: "tl", burmese: "my", myanmar: "my",
+      khmer: "km", lao: "lo", french: "fr", spanish: "es", portuguese: "pt",
+      german: "de", italian: "it", dutch: "nl", russian: "ru", ukrainian: "uk",
+      polish: "pl", greek: "el", turkish: "tr", persian: "fa", farsi: "fa",
+      hebrew: "he", swahili: "sw", amharic: "am", yoruba: "yo", igbo: "ig",
+      hausa: "ha", zulu: "zu", afrikaans: "af", somali: "so", irish: "ga",
+      welsh: "cy", swedish: "sv", norwegian: "no", danish: "da", finnish: "fi",
+      czech: "cs", romanian: "ro", hungarian: "hu", serbian: "sr", croatian: "hr",
+      bulgarian: "bg", pashto: "ps", kurdish: "ku", mongolian: "mn", tibetan: "bo",
+      sinhala: "si", maori: "mi", hawaiian: "haw",
+    };
+
+    function splitForTranslation(text, maxLength = 1400) {
+      const chunks = [];
+      let remaining = text;
+      while (remaining.length > maxLength) {
+        let splitAt = remaining.lastIndexOf("\n\n", maxLength);
+        if (splitAt < maxLength * 0.45) splitAt = remaining.lastIndexOf(". ", maxLength);
+        if (splitAt < maxLength * 0.45) splitAt = remaining.lastIndexOf(" ", maxLength);
+        if (splitAt < 1) splitAt = maxLength;
+        const end = remaining[splitAt] === "\n" ? splitAt + 2 : splitAt + 1;
+        chunks.push(remaining.slice(0, end));
+        remaining = remaining.slice(end);
+      }
+      if (remaining) chunks.push(remaining);
+      return chunks;
+    }
+
+    async function translateStory(text, language) {
+      const normalizedLanguage = language.trim().toLowerCase();
+      const targetLanguage = translationLanguageCodes[normalizedLanguage]
+        || (/^[a-z]{2,3}(?:-[a-z]{2,4})?$/i.test(normalizedLanguage) ? normalizedLanguage : "");
+      if (!targetLanguage) {
+        throw new Error("Choose a language from the suggestions, or enter its 2–3 letter language code.");
+      }
+      const chunks = splitForTranslation(text);
+      const translatedChunks = await Promise.all(chunks.map(async (chunk) => {
+        const url = new URL("https://translate.googleapis.com/translate_a/single");
+        url.searchParams.set("client", "gtx");
+        url.searchParams.set("sl", "en");
+        url.searchParams.set("tl", targetLanguage);
+        url.searchParams.set("dt", "t");
+        url.searchParams.set("q", chunk);
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`Translation service returned HTTP ${response.status}.`);
+        const result = await response.json();
+        const segments = result?.[0];
+        if (!Array.isArray(segments)) throw new Error("Translation service returned an unreadable response.");
+        return segments.map((segment) => segment?.[0] || "").join("");
+      }));
+      return translatedChunks.join("");
+    }
+
+    const characterRoles = {
+      Rama: "Rama listened to every voice before choosing a brave and measured course.",
+      Sita: "Sita noticed the small details others missed and offered a wise, steady plan.",
+      Hanuman: "Hanuman brought courage, loyalty, and a hopeful message to the whole company.",
+      Lakshmana: "Lakshmana watched over the group and made sure no one was left behind.",
+      Bharata: "Bharata reminded everyone that leadership begins with service, not pride.",
+      Shatrughna: "Shatrughna organized the supplies and quietly solved practical problems.",
+      Dasharatha: "Dasharatha shared an old lesson about keeping promises even in difficult times.",
+      Kaushalya: "Kaushalya comforted worried friends and gave them strength to continue.",
+      Kaikeyi: "Kaikeyi reflected on past choices and urged everyone to choose with care.",
+      Sumitra: "Sumitra encouraged the young travelers to support one another.",
+      Ravana: "Ravana was challenged to set aside his pride and consider the harm his choices caused.",
+      Vibhishana: "Vibhishana spoke honestly and helped the group find a peaceful path.",
+      Kumbhakarna: "Kumbhakarna asked everyone to pause and think before rushing into danger.",
+      "Indrajit (Meghanada)": "Indrajit was invited to use his skill with humility rather than rivalry.",
+      Jatayu: "Jatayu shared what he had seen and showed that even one brave voice matters.",
+      Sugriva: "Sugriva gathered allies and made sure the work was shared fairly.",
+      Vali: "Vali considered how strength could protect others instead of winning every contest.",
+      Angada: "Angada carried a calm message and gave both sides a chance to listen.",
+      Jambavan: "Jambavan recalled the team's forgotten strengths and restored their confidence.",
+      Nala: "Nala studied the river and designed a safe crossing for the whole company.",
+      Nila: "Nila worked beside Nala, turning careful plans into a sturdy path.",
+      Shabari: "Shabari welcomed the travelers and reminded them to treat every guest with kindness.",
+      Ahalya: "Ahalya offered a thoughtful perspective on hope and beginning again.",
+      Janaka: "Janaka encouraged thoughtful discussion and respect for different opinions.",
+      Mandodari: "Mandodari urged her family to choose wisdom over stubbornness.",
+      Surpanakha: "Surpanakha explained how hurt feelings had grown into a larger conflict.",
+      Maricha: "Maricha warned the group not to be misled by appearances.",
+      Tara: "Tara helped the leaders see the consequences of their choices clearly.",
+      Urmila: "Urmila's patience and steady support strengthened those far from home.",
+    };
+
+    const storyArcs = [
+      {
+        title: "The Missing Festival Drum",
+        scenes: [
+          "The great festival drum vanished from its place in the Ayodhya square on the morning it was meant to call everyone together. Without its familiar rhythm, the dance groups could not agree when to begin, and the youngest performers worried their celebration was ruined.",
+          "Rather than accuse anyone, the friends followed a trail of tiny saffron flower petals leading away from the stage. It wound through the market, past a row of painted pots, and ended at the old banyan tree, where a family of monkeys had made a nest beside the drum.",
+          "A curious young monkey had rolled the drum there, mistaking its bright tassels for a toy. The travelers coaxed it down with fruit and gentle music. They discovered the drum's skin had loosened in the damp night, so they carefully warmed and tightened it before carrying it back.",
+          "That evening the drum sounded clearer than ever. The children invited the monkey family to watch from the branches, and the musicians began a new rhythm that everyone could follow. The missing drum had brought the whole neighborhood together to solve a problem without blame.",
+        ],
+      },
+      {
+        title: "The Bridge of Painted Stones",
+        scenes: [
+          "A sudden monsoon washed away the stepping stones on the path to a riverside Dussehra gathering. On the far bank, a group of visitors waited with lamps and flower garlands, while the people of the village wondered how to welcome them safely.",
+          "The friends explored the riverbank and found smooth stones in many colors. They tested the current with long branches, marked the safest crossing, and asked skilled builders to help. Each person painted a simple symbol on a stone so that even children could see where to step.",
+          "Halfway across, a small bundle of flowers slipped into the water. The group worked together: one person steadied the rope, another reached with a long bamboo pole, and a third calmed the worried child who had been carrying it.",
+          "By sunset, a strong little bridge joined the two banks. The guests crossed slowly, carrying their lamps high, and everyone shared a meal beside the river. The painted stones stayed in place as a reminder that careful teamwork can turn an obstacle into a welcome.",
+        ],
+      },
+      {
+        title: "The Orchard That Forgot to Bloom",
+        scenes: [
+          "In a grove outside Lanka, the mango trees that usually shaded the Dussehra preparations stood dry and quiet. The gardeners feared the celebration would have no fruit to share, and the children missed the birds that usually filled the branches with song.",
+          "The friends searched for the source of the little irrigation stream. They found it blocked by fallen branches and a cracked clay channel. Instead of blaming the last storm, they asked the gardeners to show them how the water had once flowed.",
+          "Together they cleared the channel, shaped a new path with stones, and saved a small pool for thirsty birds. One young tree still drooped, so they made a shade canopy and took turns bringing it water in small, steady amounts.",
+          "A few days later, the first blossoms opened. The celebration began beneath the trees with fruit from the older branches, while everyone looked after the recovering sapling. The grove taught them that patient care, not a single grand gesture, helps new life return.",
+        ],
+      },
+      {
+        title: "The Map Beneath the Floor",
+        scenes: [
+          "While sweeping an old hall in Ayodhya, a child found a folded map beneath a loose floor tile. Its faded lines showed a winding path to a forgotten well, but the map had no name and no one knew whether the water would still be clean.",
+          "The travelers packed a rope, a lantern, and a small pot, then followed the map's landmarks: a split neem tree, a flat stone shaped like a bird, and a hill where the wind sang through tall grass. At each turn, they checked the drawing instead of guessing.",
+          "The well was there, hidden beneath vines. A cool breeze rose from it, but the old cover had cracked. The group called nearby families, who brought strong planks and helped secure the opening before anyone lowered a bucket.",
+          "Clear water filled the pot, and the well became a shared place cared for by the whole neighborhood. They copied the map and added directions in plain words, so that future visitors would find it without risking the old floor or losing their way.",
+        ],
+      },
+      {
+        title: "The Lantern on the Hill",
+        scenes: [
+          "Each Dussehra, a lantern was lit on a hill so travelers could find their way home after the celebrations. This year the lantern remained dark, and a thick evening mist was gathering across the road below.",
+          "The friends climbed the hill with oil, a fresh wick, and a folded cloth to shield the flame. Halfway up, the wind grew so strong that the small flame in their travel lamp nearly went out. They paused behind a stone wall and waited for a calmer moment.",
+          "At the top, they discovered the lantern's glass was clouded with dust and its metal door had rusted shut. Working carefully, they cleaned each panel and freed the latch. They took turns shielding the wick while the others secured the lantern against the wind.",
+          "A warm light finally stretched across the mist. Travelers below saw the signal and guided one another along the safe road. The hilltop lantern had become more than a beacon: it reminded everyone that helping another find the way can be its own kind of courage.",
+        ],
+      },
+      {
+        title: "The Kite That Carried a Promise",
+        scenes: [
+          "A bright kite shaped like a golden bird soared over the Dussehra fair, then vanished beyond the rooftops. Its string had been carrying a small paper promise written by two friends who had stopped speaking after a misunderstanding.",
+          "The travelers followed the kite's shadow across courtyards and garden walls. A gust had caught it in a tall neem tree. The paper fluttered high above the ground, and climbing the narrow branches would have been dangerous.",
+          "They made a long reaching pole from two bamboo rods and tied a soft cloth loop at its tip. One person steadied the base while another guided the loop around the string. The kite drifted down gently, and the promise remained safe and readable.",
+          "The two friends read their words aloud and discovered they had both been waiting for the other to speak first. They apologized, retied the kite, and let it rise again—this time with a new message inviting the whole fair to join their game.",
+        ],
+      },
+      {
+        title: "The Shadow-Puppet Show",
+        scenes: [
+          "The children of a forest village had prepared a shadow-puppet show for Dussehra, but the cloth screen tore just before the audience arrived. The performers were ready, the lamps were lit, and there was no time to find a new one.",
+          "The friends gathered spare shawls, thin bamboo, and a bundle of thread. They asked the children which scenes mattered most, then joined the cloth panels carefully so the seams would not cross the brightest part of the screen.",
+          "When the wind slipped beneath the stage, the repaired screen billowed like a sail. The performers held it from behind while the audience formed a circle around the lamps, blocking the gusts and turning the whole crowd into part of the backstage crew.",
+          "The puppets danced across the patchwork screen, and every seam became a glowing line in the story. After the show, the children added bright borders and kept the screen for future performances. What began as a tear became the most beautiful part of their stage.",
+        ],
+      },
+      {
+        title: "The Song Across the Sea",
+        scenes: [
+          "On the shore near Lanka, the usual evening song that helped fishing boats return safely could not be heard. A festival bell had cracked, and without its clear note the boats offshore could not tell which way the harbor lay in the mist.",
+          "The friends climbed a rocky lookout and listened for the faint replies from the boats. They tried a conch shell, a hand drum, and a row of small lamps, learning which sounds carried farthest over the waves.",
+          "A young sailor recognized a pattern of three drumbeats followed by a pause. From the water came the same rhythm in reply. The friends kept the beat steady while people on the beach formed a line of lanterns toward the safest landing place.",
+          "One by one, the boats found the harbor. At dawn, the musicians repaired the bell together and kept the new drum pattern as a backup signal. The night reminded everyone that listening and adapting can guide people through uncertainty.",
+        ],
+      },
+    ];
+
+    const journeyScenes = [
+      "Along the way, the travelers met a potter whose cart wheel had split. They found a fallen branch strong enough to serve as a temporary axle and stayed until the pots were safely delivered.",
+      "A sudden shower sent the group beneath a broad banyan tree. While they waited, an elder taught them a traveling song whose verses changed from village to village but whose welcome was the same everywhere.",
+      "At a fork in the road, three painted signposts pointed in different directions. Rather than argue, the friends asked a shepherd for help and learned that each path led to a different part of the celebration.",
+      "They shared their last sweet with a tired child who had lost sight of her family. Together they retraced her steps, calling gently until a relieved parent appeared from the market.",
+      "A flock of birds scattered seed across the dusty path. The travelers paused to move the seeds into a patch of soft earth, knowing that even a small act of care could shade someone years later.",
+      "At a quiet rest stop, each traveler described one thing they had learned from someone else. The answers surprised them: every person in the group had both something to teach and something to learn.",
+      "They found a tiny lamp burning beside an empty doorway. A note asked passersby to keep it lit for anyone still on the road, so the friends sheltered its flame and left fresh oil for the next traveler.",
+      "Before continuing, the group checked their supplies and made sure everyone had water. Their careful pace meant they arrived together, not merely quickly.",
+    ];
+
+    const openingScenes = [
+      (lead, place) => `As Dussehra drew near in ${place}, ${lead} noticed that a small worry was keeping the neighbors from enjoying their preparations. Instead of waiting for someone else to act, ${lead} invited a few friends to help.`,
+      (lead, place) => `The morning sun warmed ${place} as ${lead} arrived for the Dussehra gathering. Bright decorations filled the streets, but an unexpected problem had left the celebration at a standstill.`,
+      (lead, place) => `On the first evening of Dussehra in ${place}, a distant call for help reached ${lead}. The festivities could wait; someone nearby needed patience, clear thinking, and a willing hand.`,
+      (lead, place) => `A golden sunset settled over ${place} as the Dussehra preparations began. ${lead} was looking forward to the celebration when an unusual discovery gave the day a different purpose.`,
+    ];
+
+    const closingScenes = [
+      (lead, companion) => `As the lamps glowed that night, ${lead} and ${companion} understood that a celebration shines brightest when everyone has a place in it.`,
+      (lead, companion) => `The friends returned beneath the evening lamps, carrying no treasure except a story of how people can solve difficult things together.`,
+      (lead, companion) => `When the final song rose into the night, ${lead} thanked ${companion} for proving that a thoughtful act can change the whole day.`,
+      (lead, companion) => `Long afterward, the neighbors remembered the day ${lead} and ${companion} turned an unexpected problem into a reason to come together.`,
+    ];
+
+    let unusedArcIndices = storyArcs.map((_, index) => index);
+    try {
+      const storedIndices = JSON.parse(sessionStorage.getItem("dussehra-unused-arcs") || "null");
+      if (
+        Array.isArray(storedIndices)
+        && storedIndices.every((index) => Number.isInteger(index) && index >= 0 && index < storyArcs.length)
+      ) {
+        unusedArcIndices = storedIndices;
+      }
+    } catch {
+      // Keep the in-memory history when browser storage is unavailable.
+    }
+
+    function createLocalStory(characters, setting, lesson, length) {
+      const lead = characters.includes("Rama") ? "Rama" : characters[0];
+      const companion = characters.find((name) => name !== lead) || lead;
+      if (unusedArcIndices.length === 0) {
+        unusedArcIndices = storyArcs.map((_, index) => index);
+      }
+      const selectedPosition = Math.floor(Math.random() * unusedArcIndices.length);
+      const [arcIndex] = unusedArcIndices.splice(selectedPosition, 1);
+      try {
+        sessionStorage.setItem("dussehra-unused-arcs", JSON.stringify(unusedArcIndices));
+      } catch {
+        // Keep the in-memory history when browser storage is unavailable.
+      }
+      const arc = storyArcs[arcIndex];
+      const randomItem = (items) => items[Math.floor(Math.random() * items.length)];
+      const additionalScenes = journeyScenes.slice();
+      for (let index = additionalScenes.length - 1; index > 0; index -= 1) {
+        const swapIndex = Math.floor(Math.random() * (index + 1));
+        [additionalScenes[index], additionalScenes[swapIndex]] =
+          [additionalScenes[swapIndex], additionalScenes[index]];
+      }
+      const castParagraph = characters
+        .map((name) => characterRoles[name] || `${name} offered a thoughtful idea and helped the group.`)
+        .join(" ");
+      const selectedScenes = [
+        randomItem(openingScenes)(lead, setting.toLowerCase()),
+        arc.scenes[0],
+      ];
+      if (length !== "Short") selectedScenes.push(castParagraph, arc.scenes[1]);
+      const journeyCount = { Short: 0, Medium: 0, Long: 3, "Very long": 8 }[length];
+      selectedScenes.push(...additionalScenes.slice(0, journeyCount));
+      if (length !== "Short") selectedScenes.push(arc.scenes[2]);
+      selectedScenes.push(
+        arc.scenes[3],
+        randomItem(closingScenes)(lead, companion)
+      );
+      return `${arc.title}\n\n${selectedScenes.join("\n\n")}\n\nLesson: ${lesson}.`;
+    }
+
+    selectAllButton.addEventListener("click", () => {
+      const selectAll = characterInputs.some((input) => !input.checked);
+      characterInputs.forEach((input) => { input.checked = selectAll; });
+      selectAllButton.textContent = selectAll ? "Clear character selection" : "Select all characters";
+      selectionCount.textContent = `${characterInputs.filter((input) => input.checked).length} selected`;
+    });
+
+    characterInputs.forEach((input) => {
+      input.addEventListener("change", () => {
+        selectionCount.textContent = `${characterInputs.filter((item) => item.checked).length} selected`;
+        selectAllButton.textContent = characterInputs.every((item) => item.checked)
+          ? "Clear character selection"
+          : "Select all characters";
+      });
+    });
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      storyContent.classList.remove("error-message");
+      const selectedCharacters = characterInputs
+        .filter((input) => input.checked)
+        .map((input) => input.value);
+      if (selectedCharacters.length === 0) {
+        storyHeading.textContent = "Choose a character";
+        storyContent.textContent = "Select at least one character to create your story.";
+        storyContent.classList.add("error-message");
+        return;
+      }
+      const language = languageInput.value.trim();
+      if (!language) {
+        storyHeading.textContent = "Choose a language";
+        storyContent.textContent = "Enter the language you would like your story written in.";
+        storyContent.classList.add("error-message");
+        languageInput.focus();
+        return;
+      }
+      generateButton.disabled = true;
+      generateButton.querySelector("span:last-child").textContent = "Creating your story…";
+      storyContent.setAttribute("aria-busy", "true");
+      storyContent.textContent = "Gathering a little courage, kindness, and wonder…";
+      storyHeading.textContent = "A story is unfolding";
+      copyButton.disabled = true;
+
+      try {
+        if (useBrowserGenerator) {
+          currentStory = createLocalStory(
+            selectedCharacters,
+            form.elements.setting.value,
+            form.elements.lesson.value,
+            form.elements.namedItem("length").value
+          );
+          if (language.toLowerCase() !== "english") {
+            storyHeading.textContent = "Translating your story";
+            storyContent.textContent = "Connecting to Google Translate…";
+            currentStory = await translateStory(currentStory, language);
+          }
+          renderStory(currentStory);
+          storyHeading.textContent = "A tale for Dussehra";
+          copyButton.disabled = false;
+          return;
+        }
+        const response = await fetch("/api/story", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            characters: selectedCharacters,
+            setting: form.elements.setting.value,
+            lesson: form.elements.lesson.value,
+            length: form.elements.namedItem("length").value,
+            language,
+          }),
+        });
+        const responseText = await response.text();
+        let result;
+        try {
+          result = JSON.parse(responseText);
+        } catch {
+          const body = responseText.trim();
+          if (response.status === 403) {
+            throw new Error(
+              "HTTP 403 Forbidden: this response is not from the story app's API. Start the app with `python app.py`, then open http://127.0.0.1:8000 (do not open index.html directly). If you already use that address, stop any old server and restart it. Gemini key errors from the app are returned as a readable message."
+            );
+          }
+          const detail = body ? ` Response: ${body.slice(0, 160)}` : "";
+          throw new Error(
+            `The server returned a non-JSON response (HTTP ${response.status}). Check that the Python app server is running at http://127.0.0.1:8000.${detail}`
+          );
+        }
+        if (!response.ok) {
+          throw new Error(result.error || "The story could not be generated. Please try again.");
+        }
+
+        currentStory = result.story;
+        renderStory(currentStory);
+        storyContent.classList.remove("error-message");
+        storyHeading.textContent = "A tale for Dussehra";
+        copyButton.disabled = false;
+      } catch (error) {
+        currentStory = "";
+        storyHeading.textContent = "Unable to create a story";
+        storyContent.textContent = error.message || "Something went wrong. Please try again.";
+        storyContent.classList.add("error-message");
+      } finally {
+        generateButton.disabled = false;
+        generateButton.querySelector("span:last-child").textContent = "Generate my story";
+        storyContent.setAttribute("aria-busy", "false");
+      }
+    });
+
+    copyButton.addEventListener("click", async () => {
+      if (!currentStory) return;
+      try {
+        await navigator.clipboard.writeText(currentStory);
+        copyButton.textContent = "Copied!";
+        window.setTimeout(() => { copyButton.textContent = "Copy story"; }, 1600);
+      } catch {
+        storyHeading.textContent = "Copy unavailable";
+        storyContent.textContent = "Your browser could not access the clipboard. Select the story text to copy it.";
+        storyContent.classList.add("error-message");
+      }
+    });
+
+  </script>
+</body>
+</html>
